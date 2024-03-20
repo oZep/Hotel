@@ -1,102 +1,170 @@
+// Variables
+root {
+    --crimson: #DC143C;
+    --white: #fff;
+    --black: #000;
+    --lobster: 'Lobster', serif;
+    --roboto: 'Roboto Condensed', sans-serif;
+}
+
+/*Typography*/
+html {font: 16px 'Lobster', serif;}
+h1 {font-size: 2em;}
+h2 {font-size: 1.75em;}
+h3 {font-size: 1.5em;}
+p {font-size: 1.25em;}
+/*BASE*/
+html,
 body {
-    background: white;
-    align-items: center;
+    width: 100%;
+    height: 100%;
 }
-
-.container {
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    padding: 20px;
-    border-radius: 30px;
-    border: 1px solid grey;
-    box-shadow: 4px 3px rgb(76, 76, 76, 0.8);
+/*Layout*/
+* {box-sizing: border-box;}
+/*Navigation*/
+nav {
+    position: relative;
+    left: -12em;
+    width: 6em;
+    height: 100%;
+    background: --crimson;
+    font-family: 'Roboto Condensed', sans-serif;
+    transition: left .85s linear;
 }
-footer {
-    font-family: Arial, Helvetica, sans-serif;
-    flex-direction: column;
-    position: flex;
-    display: flex;
-    align-items: center;
-    bottom: 0;
-    font-size: large;
-    color: rgb(0, 0, 0);
+.nav ul {
+    float: left;
+    width: 100%;
 }
-
-.title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+.nav a,
+.fa-bars,
+.soc-media a {
+    display: block;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background .35s;
 }
-
-.description {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+.nav a:hover {background: #eb1f48;}
+.nav a:active {background: #ed365b;}
+.nav a {
+    padding: 1em .5em;
+    width: 100%;
 }
-
-.submit, .reset {
-    padding: .3rem .6rem;
-    font-size: 1rem;
-    background-color: #000000;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 .3rem;
+.fa-bars {
+    position: absolute;
+    left: 0em;
+    padding: .25em 0;
+    z-index: 99;
+    width: 2em;
+    background: --crimson;
+    text-align: center;
+    transition: left .75s ease-in-out;
 }
-
-.submit:hover {
-    background-color: #8d8d8d;
+.fa-bars:hover {cursor: pointer;}
+[type="checkbox"] {
+    display: none;
 }
-
-input[type="text" i] {
-    padding-block-end: .3rem;
-    padding-block-start: .1rem;
-    font-size: 1.2rem;
-    border: 2px solid grey;
-    border-radius: 10px;
-    padding: 7px;
-    width: 70%;
-    margin: 0 .4rem;
+[type="checkbox"]:checked + label {left: 3em;}
+[type="checkbox"]:checked ~ nav {left: 0;}
+/*Social media*/
+.soc-media {
+    position: absolute;
+    bottom: 5px;
 }
-
-label {
-    font-size: 1.2rem;
-    margin: 0.4rem .4rem;
-    white-space: nowrap;
+.soc-media li {float: left;}
+.soc-media a {
+    padding: .5em 0;
+    width: 2em;
+    font-weight: normal;
+    text-align: center;
 }
-
-.footer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 1.2em;
-    padding: 5rem 0 3rem;
+/*Page Wrapper*/
+.wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background: url(http://www.gratisography.com/pictures/119.jpg) no-repeat;
+    background-size: cover;
 }
-
-.midlane {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding-left: 3em;
-    padding-right: 3em;
+.wrapper > h1 {
+    position: absolute;
+    top: 45%;
+    width: 100%;
+    color: --crimson;
+    font-size: 3em;
+    text-align: center;
 }
-
-p a  {
-    color: #45b227 !important;
+.overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,.2);
 }
-
-p a:hover {
-    color: #0fcd0f !important;
+/*Pages*/
+section {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100%;
+    overflow: hidden;/*hide all on 0% width*/
+    transition: all .75s;
 }
-
-form {
-    display: flex;
-    flex-direction: row;
+:target {
+    width: 100%;
+}
+section .content {
+    margin: 1em auto;
+    max-width: 900px;
+    width: 60%;
+    color: --crimson;
+}
+section h1,
+section h2,
+section h3 {
+    margin-bottom: .5em;
+    text-align: center;
+}
+section p {
+    margin: .5em 0;
+    font-family: 'lobster';
+}
+/*Home page*/
+/*About page*/
+.about {
+    background: rgba(255,255,255,.75);
+}
+/*Clients page*/
+.clients {
+    background: rgba(255,255,255,.75);
+}
+.clients .row {
+    float: left;
+    margin-bottom: 1em;
+    width: 100%;
+}
+.client-box {
+    float: left;
+    margin: 0 3em;
+    width: 100px;
+    height: 100px;
+}
+.client-box img {
+    display: block;
+    width: 100%;
+}
+/*Contact page*/
+.contact {
+    background: rgba(255,255,255,.75);
+}
+.map-container,
+.map-container iframe {
+    margin: 2em auto;
+    width: 300px;
+    height: 300px;
+    background: url(http://mapserver.mapy.cz/compose?cx=14.439095639754257&cy=50.05115503092217&w=1024&h=480&scale=0.7&z=15&palette=32) no-repeat center center;
+    border: .5em solid --crimson;
+    border-radius: 50%;
+    overflow: hidden;
 }
