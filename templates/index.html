@@ -2,120 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Link Ahead</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Welcome to Link Ahead</title>
     <style>
-        .hotel-chain {
-            display: none;
+        .section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000000;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        .section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <input type="checkbox" id="checkbox" /><label for="checkbox"></label>
-    <nav role='navigation'>
-        <ul>
-            <li><a href="#hotel-chain-1" onclick="showHotelChain('hotel-chain-1')">Hotel Chain 1</a></li>
-            <li><a href="#hotel-chain-2" onclick="showHotelChain('hotel-chain-2')">Hotel Chain 2</a></li>
-            <li><a href="#hotel-chain-3" onclick="showHotelChain('hotel-chain-3')">Hotel Chain 3</a></li>
-            <li><a href="#page-clients" onclick="hideMenu()">Clients</a></li>
-            <li><a href="#page-contact" onclick="hideMenu()">Contact Us</a></li>
-        </ul>
-    </nav>
+    <section class="section">
+        <h2>Search</h2>
+        <button><a href="search.html">Search</a></button>
 
-    <button id="back" style="display: none;" onclick="showMenu()">Show Menu</button>
+        <h2>Manual Search</h2>
+        <button><a href="manual_search.html">Manual Search</a></button>
 
-    <main>
-        <section id="hotel-chain-1" class="hotel-chain">
-            <h2>Hotel Chain 1</h2>
-            <ul id="hotel-chain-1-list">
-                <li><a href="#hotel1">Hotel1</a></li>
-                <li><a href="#hotel2">Hotel2</a></li>
-                <li><a href="#hotel3">Hotel3</a></li>
-                <li><a href="#hotel4">Hotel4</a></li>
-                <li><a href="#hotel5">Hotel5</a></li>
-                <li><a href="#hotel6">Hotel6</a></li>
-                <li><a href="#hotel7">Hotel7</a></li>
-                <li><a href="#hotel8">Hotel8</a></li>
-            </ul>
-        </section>
-
-        <section id="hotel-chain-2" class="hotel-chain">
-            <h2>Hotel Chain 2</h2>
-            <ul id="hotel-chain-2-list">
-                <li><a href="#hotel9">Hotel9</a></li>
-                <li><a href="#hotel10">Hotel10</a></li>
-                <li><a href="#hotel11">Hotel11</a></li>
-                <li><a href="#hotel12">Hotel12</a></li>
-                <li><a href="#hotel13">Hotel13</a></li>
-                <li><a href="#hotel14">Hotel14</a></li>
-                <li><a href="#hotel15">Hotel15</a></li>
-                <li><a href="#hotel16">Hotel16</a></li>
-            </ul>
-        </section>
-
-        <section id="hotel-chain-3" class="hotel-chain">
-            <h2>Hotel Chain 3</h2>
-            <ul id="hotel-chain-3-list">
-                <li><a href="#hotel17">Hotel17</a></li>
-                <li><a href="#hotel18">Hotel18</a></li>
-                <li><a href="#hotel19">Hotel19</a></li>
-                <li><a href="#hotel20">Hotel20</a></li>
-                <li><a href="#hotel21">Hotel21</a></li>
-                <li><a href="#hotel22">Hotel22</a></li>
-                <li><a href="#hotel23">Hotel22</a></li>
-                <li><a href="#hotel24">Hotel22</a></li>
-            </ul>
-        </section>
-    </main>
-
-    <script>
-        function hideMenu() {
-            var navigation = document.querySelector('nav');
-            navigation.style.display = 'none';
-            var backButton = document.querySelector('#back');
-            backButton.style.display = 'block';
-
-            // Hide all hotel lists
-            var hotelChains = document.querySelectorAll('.hotel-chain');
-            hotelChains.forEach(function(hotelChain) {
-                hotelChain.style.display = 'none';
-            });
-        }
-
-        function showMenu() {
-            var navigation = document.querySelector('nav');
-            navigation.style.display = 'block';
-            var backButton = document.querySelector('#back');
-            backButton.style.display = 'none';
-
-            // Show main hotel chain selections page
-            var hotelChains = document.querySelectorAll('.hotel-chain');
-            hotelChains.forEach(function(hotelChain) {
-                hotelChain.style.display = 'none';
-            });
-        }
-
-        function showHotelChain(hotelChainId) {
-            var navigation = document.querySelector('nav');
-            navigation.style.display = 'none';
-            var backButton = document.querySelector('#back');
-            backButton.style.display = 'block';
-
-            // Hide all hotel chains
-            var hotelChains = document.querySelectorAll('.hotel-chain');
-            hotelChains.forEach(function(hotelChain) {
-                hotelChain.style.display = 'none';
-            });
-
-            // Show selected hotel chain
-            var hotelChain = document.querySelector('#' + hotelChainId);
-            hotelChain.style.display = 'block';
-        }
-
-        var backButton = document.querySelector('#back');
-        backButton.addEventListener('click', function() {
-            showMenu();
-        });
-    </script>
+    </section>
 </body>
 </html>
