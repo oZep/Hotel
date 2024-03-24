@@ -1,16 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Search Page</title>
-    <!-- Add your CSS stylesheets and JavaScript files here -->
+    <title>Hotel Booking Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            margin: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="checkbox"] {
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #444;
+        }
+
+        a {
+            display: block;
+            margin: 20px auto;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            text-align: center;
+            width: fit-content;
+        }
+
+        a:hover {
+            background-color: #444;
+        }
+    </style>
 </head>
 <body>
-    <!-- Add your HTML content here -->
-    <h1>Search Page</h1>
-    <form>
-        <input type="text" name="search" placeholder="Enter your search query">
-        <button type="submit">Search</button>
+    <header>
+        <h1>Hotel Booking Site</h1>
+    </header>
+
+    <form action="/search" method="get">
+        <div>
+            <label for="amenities">Amenities:</label>
+            <input type="text" id="amenities" name="amenities" placeholder="e.g. pool, gym, free breakfast...">
+        </div>
+
+        <div>
+            <label for="pricelow">Price low:</label>
+            <input type="number" id="pricelow" name="pricelow" min="0" value="">
+        </div>
+
+        <div>
+            <label for="pricehigh">Price high:</label>
+            <input type="number" id="pricehigh" name="pricehigh" min="0" value="">
+        </div>
+
+        <div>
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating">
+                <option value="">Any</option>
+                <option value="1">1 star</option>
+                <option value="2">2 stars</option>
+                <option value="3">3 stars</option>
+                <option value="4">4 stars</option>
+                <option value="5">5 stars</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="extendible">Extendible stay:</label>
+            <input type="checkbox" id="extendible" name="extendible" value="true">
+        </div>
+
+        <div>
+            <input type="submit" value="Search">
+        </div>
     </form>
+
+    <a href="/">Back</a>
 </body>
 </html>

@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhos
 db = SQLAlchemy(app)
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():  
     return render_template('index.html')
 
 @app.route('/search.html')
@@ -44,16 +44,24 @@ def search():
         sql_query += f" AND price >= {pricelow}"
     if extendible:
         sql_query += f" AND extendible = '{extendible}'"
+    
+    sql_query += f" AND isAvailable = 'TRUE'"
 
     # Execute
     results = db.session.execute(text(sql_query))
 
     # Format results
-    html_results = '<ul>'
+    html_results = ''
     for row in results:
-        html_results += f'<li>{row.name} - {row.description} - ${row.price}</li>'
-    html_results += '</ul>'
-
+        html_results += f'<div class="room">'
+        html_results += f'<img src="{row.image}" alt="{row.name}">'
+        html_results += f'<div class="details">'
+        html_results += f'<h2>{row.name}</h2>'
+        html_results += f'<p>Price: ${row.price} per night</p>'
+        html_results += f'<button class="book-button" onclick="booked({row.RoomID})">Book</button>'
+        html_results += f'</div>'
+        html_results += f'</div>'
+    
     return html_results
 
 if __name__ == '__main__':
