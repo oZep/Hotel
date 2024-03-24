@@ -20,6 +20,10 @@ def search():
 def manual_search():
     return render_template('manual_search.html')
 
+@app.route('/book.html')
+def manual_search():
+    return render_template('book.html')
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -58,7 +62,7 @@ def search():
         html_results += f'<div class="details">'
         html_results += f'<h2>{row.name}</h2>'
         html_results += f'<p>Price: ${row.price} per night</p>'
-        html_results += f'<button class="book-button" onclick="booked({row.RoomID})">Book</button>'
+        html_results += f'<button class="book-button" onclick="booked({row.RoomID})"><a href="book.html">Book</a></button>' #also make clicking this take the user to another page, keeping track of the specific room id they chose
         html_results += f'</div>'
         html_results += f'</div>'
     
