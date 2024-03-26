@@ -1,12 +1,14 @@
 from urllib import request
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/database_name'
 #db = SQLAlchemy(app)
+
+# Dummy user data for demonstration
+users = {'user1': 'password1', 'user2': 'password2'}
 
 @app.route('/')
 def hello_world():  
@@ -21,30 +23,41 @@ def manual_search():
     return render_template('manual_search.html')
 
 @app.route('/book.html')
-def manual_search():
+def book():
     return render_template('book.html')
 
 
 @app.route('/gosearch.html')
-def manual_search():
+def gosearch():
     return render_template('gosearch.html')
 
-
-@app.route('/clientLogin.html')
-def manual_search():
-    return render_template('clientLogin.html')
-
 @app.route('/clientSignUp.html')
-def manual_search():
+def client_signup():
     return render_template('clientSignUp.html')
 
-@app.route('/employeeLogin.html')
-def manual_search():
-    return render_template('employeeLogin.html')
-
 @app.route('/employeeSignUp.html')
-def manual_search():
+def employee_signup():
     return render_template('employeeSignUp.html')
+
+@app.route('/employeePage.html')
+def employee_page():
+    return render_template('employeePage.html')
+
+@app.route('/employee')
+def employee():
+    return render_template('employeePage.html')
+
+@app.route('/signin', methods=['POST'])
+def signin():
+    username = request.form['name']
+    password = request.form['ssn']
+    
+    if username in users and users[username] == password:
+        # Authentication successful, redirect to employee page
+        return redirect(url_for('employee_page'))
+    else:
+        # Authentication failed, redirect back to sign-in page
+        return redirect(url_for('client_login'))
 
 
 #class Product(db.Model):

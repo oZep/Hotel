@@ -65,17 +65,14 @@
 <body>
 	<div class="login">
 		<h2>Employee Sign-In</h2>
-		<form id="login" method="get" action="sign-in.php">
+		<form action="/signin" method="POST">
 			<label for="name"><b>Full Name</b></label>
 			<input type="text" name="name" id="name" placeholder="Enter your name">
-			<br><br>
-			<label for="address"><b>Address</b></label>
-			<input type="text" name="address" id="address" placeholder="Enter your address">
 			<br><br>
 			<label for="ssn"><b>SSN</b></label>
 			<input type="text" name="ssn" id="ssn" placeholder="Enter your SSN">
 			<br><br>
-			<input type="button" name="sign" id="sign" value="Sign In">
+			<input type="submit" name="sign" id="sign" value="Sign In">
 			<br><br>
 		</form>
 	</div>
