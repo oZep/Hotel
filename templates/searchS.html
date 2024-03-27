@@ -72,6 +72,26 @@
         a:hover {
             background-color: #444;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -118,5 +138,20 @@
     </form>
 
     <button><a href="index.html">Back</a></button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Hotel Name</th>
+                <th># of Stars</th>
+                <th>Extendable</th>
+                <th>Price</th>
+                <th>Amenities</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Add table rows here -->
+        </tbody>
+    </table>
 </body>
 </html>
