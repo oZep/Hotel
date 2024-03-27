@@ -1,6 +1,6 @@
 from urllib import request
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 app = Flask(__name__)
@@ -57,7 +57,7 @@ def signin():
         return redirect(url_for('employee_page'))
     else:
         # Authentication failed, redirect back to sign-in page
-        return redirect(url_for('client_login'))
+        return redirect(url_for('employee_signup'))
 
 
 #class Product(db.Model):
