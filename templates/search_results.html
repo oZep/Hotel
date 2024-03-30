@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Extendable</th>
+                <th>Price</th>
+                <th>Amenities</th>
+                <th>View</th>
+                <th>Book Room</th>  <!-- Add new column for button -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in results %}
+            <tr>
+                <td>{{ room.hotel_name }}</td>
+                <td>{{ room.stars }}</td>
+                <td>{{ room.extendable }}</td>
+                <td>{{ room.price }}</td>
+                <td>{{ room.amenities }}</td>
+                <td>{{ room.view }}</td>
+                <td>
+                    <form action="/book/{{ room.room_id }}" method="get">
+                        <button type="submit">Book</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button><a href="index.html">Back</a></button>
+</body>
+</html>

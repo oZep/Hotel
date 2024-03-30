@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:issadogs@localhost/hotel'
@@ -44,6 +46,18 @@ def employee_page():
 def employee():
     return render_template('employeePage.html')
 
+@app.route('/search_results.html')
+def search_results():
+    return render_template('search_results.html')
+
+@app.route('/confirmation/<int:room_id>/<int:customer_id>')
+def confirmation(room_id, customer_id):
+    # Retrieve customer and room information
+    customer = Customer.query.get(customer_id)
+    room = Room.query.get(room_id)
+    return render_template('confirmation.html', customer=customer, room_id=room_id)
+
+
 @app.route('/signin', methods=['POST'])
 def signin():
     username = request.form['name']
@@ -56,44 +70,79 @@ def signin():
         # Authentication failed, redirect back to sign-in page
         return redirect(url_for('employee_signup'))
 
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(200))
-    price = db.Column(db.Float)
+class Room(db.Model):
+    __tablename__ = 'room'
+
+    room_id = db.Column(db.Integer, primary_key=True)
+    capacity = db.Column(db.Integer)
+    extendable = db.Column(db.Boolean)
+    hotel_id = db.Column(db.Integer)
+    isavailable = db.Column(db.Boolean)
+    price = db.Column(db.Numeric)
+    view = db.Column(db.Boolean)
+
+class Customer(db.Model):
+    __tablename__ = 'customer'
+
+    cus_id = db.Column(db.Integer, primary_key=True)
+    fullname = db.Column(db.String(255))
+    address = db.Column(db.String(255))
+    registrationdate = db.Column(db.Date)
+
+
 @app.route('/search', methods=['GET'])
 def search():
     amenities = request.args.get('amenities')
-    pricehigh = request.args.get('pricehigh')
     pricelow = request.args.get('pricelow')
+    pricehigh = request.args.get('pricehigh')
     extendible = request.args.get('extendible')
-    # Start building the SQL query
-    sql_query = "SELECT * FROM products WHERE 1=1"
+    view = request.args.get('view')
 
+    query = Room.query
+
+    # Filter based on search parameters
     if amenities:
-        sql_query += f" AND amenities ILIKE '%{amenities}%'"
-    if pricehigh:
-        sql_query += f" AND price <= {pricehigh}"
+        query = query.filter(Room.amenities.ilike(f"%{amenities}%"))
     if pricelow:
-        sql_query += f" AND price >= {pricelow}"
+        query = query.filter(Room.price >= float(pricelow))
+    if pricehigh:
+        query = query.filter(Room.price <= float(pricehigh))
     if extendible:
-        sql_query += f" AND extendible = '{extendible}'"
-    
-    sql_query += f" AND isAvailable = 'TRUE'"
-    # Execute
-    results = db.session.execute(text(sql_query))
-    # Format results
-    html_results = ''
-    for row in results:
-        html_results += f'<div class="room">'
-        html_results += f'<img src="{row.image}" alt="{row.name}">'
-        html_results += f'<div class="details">'
-        html_results += f'<h2>{row.name}</h2>'
-        html_results += f'<p>Price: ${row.price} per night</p>'
-        html_results += f'<button class="book-button" onclick="booked({row.RoomID})"><a href="book.html">Book</a></button>' #also make clicking this take the user to another page, keeping track of the specific room id they chose
-        html_results += f'</div>'
-        html_results += f'</div>'
-    
-    #return html_results
+        query = query.filter(Room.extendible == True)
+    if view:
+        query = query.filter(Room.view == True)
+
+    results = query.all()
+
+    return render_template('search_results.html', results=results)
+
+
+@app.route('/book/<int:room_id>', methods=['GET', 'POST'])
+def book_room(room_id):
+    if request.method == 'POST':
+        # Extract information from the booking form
+        fullname = request.form.get('fullname')
+        email = request.form.get('email')
+        address = request.form.get('address')
+        dateofreg = request.form.get('dateofreg')
+
+        # Create a new Customer instance
+        new_customer = Customer(fullname=fullname, address=address, registrationdate=datetime.strptime(dateofreg, '%Y-%m-%d').date())
+
+        # Add the new customer to the database
+        db.session.add(new_customer)
+        db.session.commit()
+
+        # Update the room's availability
+        room = Room.query.get(room_id)
+        room.isavailable = False
+        db.session.commit()
+
+        # Redirect to a confirmation page or somewhere else
+        return redirect(url_for('confirmation', room_id=room_id, customer_id=new_customer.id))
+
+    # Render the booking page template
+    return render_template('book.html', room_id=room_id)
+
 if __name__ == '__main__':
-    app.run()
+   app.run(debug=True)

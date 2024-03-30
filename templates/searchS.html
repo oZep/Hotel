@@ -101,8 +101,8 @@
 
     <form action="/search" method="get">
         <div>
-            <label for="amenities">Amenities:</label>
-            <input type="text" id="amenities" name="amenities" placeholder="e.g. pool, gym, free breakfast...">
+            <label for="amenities">View:</label>
+            <input type="text" id="amenities" name="amenities" >
         </div>
 
         <div>
@@ -116,20 +116,8 @@
         </div>
 
         <div>
-            <label for="rating">Rating:</label>
-            <select id="rating" name="rating">
-                <option value="">Any</option>
-                <option value="1">1 star</option>
-                <option value="2">2 stars</option>
-                <option value="3">3 stars</option>
-                <option value="4">4 stars</option>
-                <option value="5">5 stars</option>
-            </select>
-        </div>
-
-        <div>
             <label for="extendible">Extendible stay:</label>
-            <input type="checkbox" id="extendible" name="extendible" value="true">
+            <input type="checkbox" id="extendible" name="extendible">
         </div>
 
         <div>
@@ -142,16 +130,23 @@
     <table>
         <thead>
             <tr>
-                <th>Hotel Name</th>
-                <th># of Stars</th>
                 <th>Extendable</th>
                 <th>Price</th>
                 <th>Amenities</th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Add table rows here -->
+            {% for room in results %}
+            <tr>
+                <td>{{ room.extendable }}</td>
+                <td>{{ room.price }}</td>
+                <td>{{ room.amenities }}</td>
+                <td>{{ room.view }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
+    
 </body>
 </html>
