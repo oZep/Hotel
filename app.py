@@ -61,30 +61,39 @@ class Product(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200))
     price = db.Column(db.Float)
-
 @app.route('/search', methods=['GET'])
 def search():
     amenities = request.args.get('amenities')
-    price_high = request.args.get('pricehigh')
-    price_low = request.args.get('pricelow')
+    pricehigh = request.args.get('pricehigh')
+    pricelow = request.args.get('pricelow')
     extendible = request.args.get('extendible')
+    # Start building the SQL query
+    sql_query = "SELECT * FROM products WHERE 1=1"
 
-    # Start building the SQL query using parameterized query
-    query = Product.query.filter_by(isAvailable=True)
     if amenities:
-        query = query.filter(Product.amenities.ilike(f'%{amenities}%'))
-    if price_high:
-        query = query.filter(Product.price <= float(price_high))
-    if price_low:
-        query = query.filter(Product.price >= float(price_low))
+        sql_query += f" AND amenities ILIKE '%{amenities}%'"
+    if pricehigh:
+        sql_query += f" AND price <= {pricehigh}"
+    if pricelow:
+        sql_query += f" AND price >= {pricelow}"
     if extendible:
-        query = query.filter(Product.extendible == extendible)
-
-    # Execute the query
-    results = query.all()
-
-    # Render template with search results
-    return render_template('search_results.html', results=results)
-
+        sql_query += f" AND extendible = '{extendible}'"
+    
+    sql_query += f" AND isAvailable = 'TRUE'"
+    # Execute
+    results = db.session.execute(text(sql_query))
+    # Format results
+    html_results = ''
+    for row in results:
+        html_results += f'<div class="room">'
+        html_results += f'<img src="{row.image}" alt="{row.name}">'
+        html_results += f'<div class="details">'
+        html_results += f'<h2>{row.name}</h2>'
+        html_results += f'<p>Price: ${row.price} per night</p>'
+        html_results += f'<button class="book-button" onclick="booked({row.RoomID})"><a href="book.html">Book</a></button>' #also make clicking this take the user to another page, keeping track of the specific room id they chose
+        html_results += f'</div>'
+        html_results += f'</div>'
+    
+    #return html_results
 if __name__ == '__main__':
     app.run()
