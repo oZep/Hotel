@@ -98,6 +98,7 @@ def signin():
     # Name: Olivia Davis, SSN: 943821732
     # Name: Emma Garcia, SSN: 642517885
     # Name: Emma Williams, SSN: 118782618
+    # Name: John Jones, SSN: 400805752
 
     if employee:
         # Authentication successful, redirect to employee page
