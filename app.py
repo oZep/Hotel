@@ -2,10 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from datetime import datetime
+import psycopg2 as pg
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:issadogs@localhost/hotel'
 db = SQLAlchemy(app)
+
+
+# Connect to the database 
+conn = pg.connect(database="hotel", user="postgres", 
+                        password="issadogs", host="localhost", port="5432") 
+  
+# create a cursor 
+cur = conn.cursor() 
+  
 
 class Room(db.Model):
     __tablename__ = 'room'
@@ -179,36 +189,50 @@ def search():
 
 @app.route('/book/<int:room_id>', methods=['GET', 'POST'])
 def book_room(room_id):
-    if request.method == 'POST':
-        # Extract information from the booking form
-        fullname = request.form.get('fullname')
-        email = request.form.get('email')
-        address = request.form.get('address')
-        dateofreg = request.form.get('dateofreg')
-
-        # Create a new Customer instance
-        new_customer = Customer(fullname=fullname, address=address, registrationdate=datetime.strptime(dateofreg, '%Y-%m-%d').date())
-
-        # Add the new customer to the database
-        db.session.add(new_customer)
-        db.session.commit()
-
-        # Update the room's availability
-        room = Room.query.get(room_id)
-        room.isavailable = False
-        db.session.commit()
-
-        # Add entry to the book table
-        new_booking = Book(cus_id=new_customer.cus_id, room_id=room_id)
-        db.session.add(new_booking)
-        db.session.commit()
-
-        # Redirect to a confirmation page or somewhere else
-        return redirect(url_for('confirmation', room_id=room_id, customer_id=new_customer.cus_id))
-
     # Render the booking page template
-    return render_template('book.html', room_id=room_id)
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    room_id = room_id
+    return render_template('book.html', room_id=room_id, current_date=current_date)
+
+
+@app.route('/submit_booking/<int:room_id>', methods=['POST'])
+def submit_booking(room_id):
+    # Extract information from the booking form
+    room_id_from_form = request.form.get('room_id')
+    fullname = request.form.get('fullname')
+    address = request.form.get('address')
+    dateofreg = request.form.get('dateofreg')
+
+    # Insert the new customer into the database
+    cur = conn.cursor()
+    cur.execute("INSERT INTO customer (cus_id, fullname, address, registrationdate) VALUES (%s, %s, %s, %s) RETURNING cus_id", (room_id, fullname, address, dateofreg))
+    new_customer_id = cur.fetchone()[0]
+    conn.commit()
+
+    # Update the room's availability
+    cur.execute("UPDATE room SET isavailable = FALSE WHERE room_id = %s", (room_id,))
+    conn.commit()
+
+    # Optionally, add entry to the book table
+    cur.execute("INSERT INTO book (cus_id, room_id) VALUES (%s, %s)", (new_customer_id, room_id))
+    conn.commit()
+
+    # Redirect to a confirmation page or render confirmation message
+    return render_template('confirmation.html', customer=room_id, room_id=room_id)
 
 
 if __name__ == '__main__':
-   app.run(debug=True)
+    app.run(debug=True)
+
+
+   # Create a new Customer instance
+        #new_customer = Customer(fullname=fullname, address=address, registrationdate=datetime.strptime(dateofreg, '%Y-%m-%d').date())
+
+        # Add the new customer to the database
+        #db.session.add(new_customer)
+        #db.session.commit()
+
+        # Update the room's availability
+        #room = Room.query.get(room_id)
+        #room.isavailable = False
+        #db.session.commit()

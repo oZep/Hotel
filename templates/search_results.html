@@ -71,7 +71,7 @@
                 <td>{{ room.amenities }}</td>
                 <td>{{ room.view }}</td>
                 <td>
-                    <form action="/book/{{ room.room_id }}" method="get">
+                    <form action="{{ url_for('book_room', room_id=room.room_id) }}" method="post">
                         <button type="submit">Book</button>
                     </form>
                 </td>
