@@ -7,8 +7,46 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:issadogs@localhost/hotel'
 db = SQLAlchemy(app)
 
-# Dummy user data for demonstration
-users = {'user1': 'password1', 'user2': 'password2'}
+class Room(db.Model):
+    __tablename__ = 'room'
+
+    room_id = db.Column(db.Integer, primary_key=True)
+    capacity = db.Column(db.Integer)
+    extendable = db.Column(db.Boolean)
+    hotel_id = db.Column(db.Integer)
+    isavailable = db.Column(db.Boolean)
+    price = db.Column(db.Numeric)
+    view = db.Column(db.Boolean)
+
+class Book(db.Model):
+    __tablename__ = 'book'
+
+    ba_id = db.Column(db.Integer, primary_key=True)
+    cus_id = db.Column(db.Integer, db.ForeignKey('customer.cus_id'))
+    room_id = db.Column(db.Integer, db.ForeignKey('room.room_id'))
+
+class Customer(db.Model):
+    __tablename__ = 'customer'
+
+    cus_id = db.Column(db.Integer, primary_key=True)
+    fullname = db.Column(db.String(255))
+    address = db.Column(db.String(255))
+    registrationdate = db.Column(db.Date)
+
+# Define the Employee class
+class Employee(db.Model):
+    __tablename__ = 'employee'
+
+    ssn = db.Column(db.Integer, primary_key=True)
+    hotel_id = db.Column(db.Integer)
+    role = db.Column(db.String)
+    name = db.Column(db.String)
+    address = db.Column(db.String)
+
+    def print(self):
+        employees = Employee.query.all()
+        for employee in employees:
+            print(f"Name: {employee.name}, SSN: {employee.ssn}")
 
 @app.route('/')
 def hello_world():
@@ -38,9 +76,21 @@ def client_signup():
 def employee_signup():
     return render_template('employeeSignUp.html')
 
-@app.route('/employeePage.html')
+@app.route('/employee_page')
 def employee_page():
-    return render_template('employeePage.html')
+    # Query the database to get information for each booking
+    bookings = db.session.query(
+        Book.ba_id,
+        Customer.fullname.label('client_name'),
+        Customer.registrationdate.label('check_in_date'),
+        Room.room_id
+    ).join(Customer, Book.cus_id == Customer.cus_id).join(Room, Book.room_id == Room.room_id).all()
+
+    print(bookings)
+    print("Hi")
+
+    # Render the template with the bookings information
+    return render_template('employeePage.html', reservations=bookings)
 
 @app.route('/employee')
 def employee():
@@ -56,21 +106,6 @@ def confirmation(room_id, customer_id):
     customer = Customer.query.get(customer_id)
     room = Room.query.get(room_id)
     return render_template('confirmation.html', customer=customer, room_id=room_id)
-
-# Define the Employee class
-class Employee(db.Model):
-    __tablename__ = 'employee'
-
-    ssn = db.Column(db.Integer, primary_key=True)
-    hotel_id = db.Column(db.Integer)
-    role = db.Column(db.String)
-    name = db.Column(db.String)
-    address = db.Column(db.String)
-
-    def print(self):
-        employees = Employee.query.all()
-        for employee in employees:
-            print(f"Name: {employee.name}, SSN: {employee.ssn}")
 
 
 @app.route('/print_employees')
@@ -107,24 +142,6 @@ def signin():
         # Authentication failed, redirect back to sign-in page
         return redirect(url_for('employee_signup'))
 
-class Room(db.Model):
-    __tablename__ = 'room'
-
-    room_id = db.Column(db.Integer, primary_key=True)
-    capacity = db.Column(db.Integer)
-    extendable = db.Column(db.Boolean)
-    hotel_id = db.Column(db.Integer)
-    isavailable = db.Column(db.Boolean)
-    price = db.Column(db.Numeric)
-    view = db.Column(db.Boolean)
-
-class Customer(db.Model):
-    __tablename__ = 'customer'
-
-    cus_id = db.Column(db.Integer, primary_key=True)
-    fullname = db.Column(db.String(255))
-    address = db.Column(db.String(255))
-    registrationdate = db.Column(db.Date)
 
 
 @app.route('/search', methods=['GET'])
@@ -181,11 +198,17 @@ def book_room(room_id):
         room.isavailable = False
         db.session.commit()
 
+        # Add entry to the book table
+        new_booking = Book(cus_id=new_customer.cus_id, room_id=room_id)
+        db.session.add(new_booking)
+        db.session.commit()
+
         # Redirect to a confirmation page or somewhere else
-        return redirect(url_for('confirmation', room_id=room_id, customer_id=new_customer.id))
+        return redirect(url_for('confirmation', room_id=room_id, customer_id=new_customer.cus_id))
 
     # Render the booking page template
     return render_template('book.html', room_id=room_id)
+
 
 if __name__ == '__main__':
    app.run(debug=True)

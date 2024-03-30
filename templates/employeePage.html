@@ -57,36 +57,24 @@
 		<table>
 			<thead>
 				<tr>
-                    <th>Reservation ID</th>
+                    <th>Book ID</th>
                     <th>Client Name</th>
-                    <th>Address</th>
                     <th>Check-in Date</th>
-                    <th>Check-out Date</th>
                     <th>Room Number</th>
                     <th>Check-in</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>John Doe</td>
-					<td>123 Main St.</td>
-					<td>2023-03-01</td>
-					<td>2023-03-04</td>
-					<td>101</td>
-                    <th><button>Check-in</button></th>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>Jane Smith</td>
-					<td>456 Elm St.</td>
-					<td>2023-03-03</td>
-					<td>2023-03-08</td>
-					<td>201</td>
-                    <th><button>Check-in</button></th>
-				</tr>
-				<!-- Add more reservations as needed -->
-			</tbody>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.ba_id }}</td>
+                    <td>{{ reservation.client_name }}</td>
+                    <td>{{ reservation.check_in_date }}</td>
+                    <td>{{ reservation.room_id }}</td>
+                    <td><button onclick="checkIn({{ reservation.ba_id }})">Check-in</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
 		</table>
 	</div>
 </body>
