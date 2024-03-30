@@ -95,22 +95,28 @@ def search():
     amenities = request.args.get('amenities')
     pricelow = request.args.get('pricelow')
     pricehigh = request.args.get('pricehigh')
+    rating = request.args.get('rating')
     extendible = request.args.get('extendible')
-    view = request.args.get('view')
 
     query = Room.query
 
-    # Filter based on search parameters
     if amenities:
         query = query.filter(Room.amenities.ilike(f"%{amenities}%"))
+
     if pricelow:
-        query = query.filter(Room.price >= float(pricelow))
+        query = query.filter(Room.price >= pricelow)
+
     if pricehigh:
-        query = query.filter(Room.price <= float(pricehigh))
-    if extendible:
-        query = query.filter(Room.extendible == True)
-    if view:
-        query = query.filter(Room.view == True)
+        query = query.filter(Room.price <= pricehigh)
+
+    if rating:
+        # Add filtering based on rating
+        query = query.filter(Room.rating == rating)
+
+    if extendible == 'on':
+        query = query.filter(Room.extendable == True)
+    else:
+        query = query.filter(Room.extendable == False)
 
     results = query.all()
 
