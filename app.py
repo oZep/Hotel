@@ -57,13 +57,49 @@ def confirmation(room_id, customer_id):
     room = Room.query.get(room_id)
     return render_template('confirmation.html', customer=customer, room_id=room_id)
 
+# Define the Employee class
+class Employee(db.Model):
+    __tablename__ = 'employee'
+
+    ssn = db.Column(db.Integer, primary_key=True)
+    hotel_id = db.Column(db.Integer)
+    role = db.Column(db.String)
+    name = db.Column(db.String)
+    address = db.Column(db.String)
+
+    def print(self):
+        employees = Employee.query.all()
+        for employee in employees:
+            print(f"Name: {employee.name}, SSN: {employee.ssn}")
+
+
+@app.route('/print_employees')
+def print_employees():
+    with app.app_context():
+        employee_instance = Employee()
+        employee_instance.print()
+    return 'Employee information printed in the console.'
+
 
 @app.route('/signin', methods=['POST'])
 def signin():
     username = request.form['name']
     password = request.form['ssn']
     
-    if username in users and users[username] == password:
+    # Query the database to check if the provided username and password match any entry in the employee table
+    employee = Employee.query.filter_by(name=username, ssn=password).first()
+
+    # some employee names to test
+    # Name: John Doe, SSN: 123456789
+    # Name: Jane Smith, SSN: 987654321
+    # Name: Olivia Brown, SSN: 569779378
+    # Name: Emma Jones, SSN: 15158238
+    # Name: William Williams, SSN: 280896680
+    # Name: Olivia Davis, SSN: 943821732
+    # Name: Emma Garcia, SSN: 642517885
+    # Name: Emma Williams, SSN: 118782618
+
+    if employee:
         # Authentication successful, redirect to employee page
         return redirect(url_for('employee_page'))
     else:
