@@ -48,7 +48,6 @@ class Employee(db.Model):
     __tablename__ = 'employee'
 
     ssn = db.Column(db.Integer, primary_key=True)
-    hotel_id = db.Column(db.Integer)
     role = db.Column(db.String)
     name = db.Column(db.String)
     address = db.Column(db.String)
@@ -57,6 +56,35 @@ class Employee(db.Model):
         employees = Employee.query.all()
         for employee in employees:
             print(f"Name: {employee.name}, SSN: {employee.ssn}")
+
+class Hotel(db.Model):
+    __tablename__ = 'hotel'
+
+    hotel_id = db.Column(db.Integer, primary_key=True, name="hotel_id")
+    hotelc_id = db.Column(db.Integer)
+    rating = db.Column(db.Integer)
+    numberofrooms = db.Column(db.Integer)
+    address = db.Column(db.String)
+    area = db.Column(db.String)
+    name = db.Column(db.String)
+
+
+class JointTable(db.Model):
+    __tablename__ = 'mega'
+
+    room_id = db.Column(db.Integer, primary_key=True)
+    hotel_id = db.Column(db.Integer)
+    capacity = db.Column(db.Integer)
+    extendable = db.Column(db.Boolean)
+    isavailable = db.Column(db.Boolean)
+    price = db.Column(db.Numeric)
+    view = db.Column(db.Boolean)
+    amenity = db.Column(db.String)
+    rating = db.Column(db.Integer)
+    numberofrooms = db.Column(db.Integer)
+    address = db.Column(db.String)
+    area = db.Column(db.String)
+    name = db.Column(db.String) 
 
 @app.route('/')
 def hello_world():
@@ -202,30 +230,50 @@ def search():
     pricehigh = request.args.get('pricehigh')
     rating = request.args.get('rating')
     extendible = request.args.get('extendible')
+    hotel = request.args.get('hotel')
+    capacity = request.args.get('room_cap')
+    tot = request.args.get('tot')
+    area = request.args.get('area')
 
-    query = Room.query
+    # Start the query with Room table
+    query = db.session.query(JointTable)
+
+    query = query.filter(JointTable.isavailable == True)
 
     if amenities:
-        query = query.filter(Room.amenities.ilike(f"%{amenities}%"))
+        query = query.filter(JointTable.amenity.ilike(f"%{amenities}%"))
 
     if pricelow:
-        query = query.filter(Room.price >= pricelow)
+        query = query.filter(JointTable.price >= pricelow)
 
     if pricehigh:
-        query = query.filter(Room.price <= pricehigh)
+        query = query.filter(JointTable.price <= pricehigh)
 
     if rating:
         # Add filtering based on rating
-        query = query.filter(Room.rating == rating)
+        query = query.filter(JointTable.rating == rating)
 
     if extendible == 'on':
-        query = query.filter(Room.extendable == True)
+        query = query.filter(JointTable.extendable == True)
     else:
-        query = query.filter(Room.extendable == False)
+        query = query.filter(JointTable.extendable == False)
+
+    if capacity:
+        query = query.filter(JointTable.capacity >= capacity)
+
+    if tot:
+        query = query.filter(JointTable.numberofrooms >= tot)
+
+    if hotel:
+        query = query.filter(JointTable.name.ilike(f"%{hotel}%"))
+    
+    if area:
+        query = query.filter(JointTable.area.ilike(f"%{area}%"))
 
     results = query.all()
 
     return render_template('search_results.html', results=results)
+
 
 
 @app.route('/book/<int:room_id>', methods=['GET', 'POST'])

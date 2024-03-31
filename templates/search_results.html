@@ -52,7 +52,7 @@
 </head>
 <body>
     <h1>Search Results</h1>
-    <button><a href="/">Back</a></button>
+    <button><a href="searchS.html">Back</a></button>
 
     <table>
         <thead>
@@ -61,6 +61,11 @@
                 <th>Price</th>
                 <th>Amenities</th>
                 <th>View</th>
+                <th>Capacity</th>
+                <th>Hotel Capacity</th>
+                <th>Hotel Name</th>
+                <th>Hotel Location</th>
+                <th>Hotel Rating</th>
                 <th>Book Room</th>  <!-- Add new column for button -->
             </tr>
         </thead>
@@ -69,8 +74,13 @@
             <tr>
                 <td>{{ room.extendable }}</td>
                 <td>{{ room.price }}</td>
-                <td>{{ room.amenities }}</td>
+                <td>{{ room.amenity }}</td>
                 <td>{{ room.view }}</td>
+                <td>{{ room.capacity }}</td>
+                <td>{{ room.numberofrooms }}</td> 
+                <td>{{ room.name }}</td>
+                <td>{{ room.address }}</td> 
+                <td>{{ room.rating }}</td>
                 <td>
                     <form action="{{ url_for('book_room', room_id=room.room_id) }}" method="post">
                         <button type="submit">Book</button>
