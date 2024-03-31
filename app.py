@@ -126,17 +126,16 @@ def employee_page():
 
     print(bookings)
 
-    # Render the template with the bookings information
     return render_template('employeePage.html', reservations=bookings)
 
 @app.route('/check_in_page', methods=['GET', 'POST'])
 def check_in_page():
     room_id = request.args.get('room_id')
 
-    # Query the database to get the amount associated with the room_id
+
     cur = conn.cursor()
     cur.execute("SELECT price FROM room WHERE room_id = %s", (room_id,))
-    paymentAmount = cur.fetchone()[0]  # Assuming there's only one amount associated with the room_id
+    paymentAmount = cur.fetchone()[0] 
 
     return render_template('check_in_page.html', room_id=room_id, paymentAmount=paymentAmount)
 
@@ -152,21 +151,19 @@ def check_in():
     cus_id = cur.fetchone()
 
     # Insert a row into the rentarchive table
-    ra_id = ba_id  # Assuming ra_id can be the same as room_id
+    ra_id = ba_id  
     date = datetime.now().date()
     cur.execute("INSERT INTO rentarchive (ra_id, date) VALUES (%s, %s)", (ra_id, date))
     conn.commit()
 
-    # Insert a row into the payment table
-    pay_id = ba_id  # Assuming pay_id can be the same as room_id
+    pay_id = ba_id  
     cur.execute("INSERT INTO payment (pay_id, amount, date) VALUES (%s, %s, %s)", (pay_id, amount, date))
     conn.commit()
 
-    # Delete the book row associated with the ba_id
     cur.execute("DELETE FROM book WHERE room_id = %s", (ba_id,))
     conn.commit()
 
-    # Redirect to the same page to avoid form resubmission
+
     return redirect(url_for('employee_page'))
 
 
@@ -215,10 +212,9 @@ def signin():
     # Name: John Jones, SSN: 400805752
 
     if employee:
-        # Authentication successful, redirect to employee page
+        # Authentication successful
         return redirect(url_for('employee_page'))
     else:
-        # Authentication failed, redirect back to sign-in page
         return redirect(url_for('employee_signup'))
 
 
@@ -292,17 +288,14 @@ def submit_booking(room_id):
     address = request.form.get('address')
     dateofreg = request.form.get('dateofreg')
 
-    # Insert the new customer into the database
     cur = conn.cursor()
     cur.execute("INSERT INTO customer (cus_id, fullname, address, registrationdate) VALUES (%s, %s, %s, %s) RETURNING cus_id", (room_id, fullname, address, dateofreg))
     new_customer_id = cur.fetchone()[0]
     conn.commit()
 
-    # Update the room's availability
     cur.execute("UPDATE room SET isavailable = FALSE WHERE room_id = %s", (room_id,))
     conn.commit()
 
-    # Optionally, add entry to the book table
     cur.execute("INSERT INTO book (cus_id, room_id) VALUES (%s, %s)", (new_customer_id, room_id))
     conn.commit()
 
