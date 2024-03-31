@@ -255,7 +255,7 @@ def submit_booking(room_id):
     conn.commit()
 
     # Optionally, add entry to the book table
-    cur.execute("INSERT INTO book (cus_id, room_id) VALUES (%s, %s, %s)", (new_customer_id, room_id))
+    cur.execute("INSERT INTO book (cus_id, room_id) VALUES (%s, %s)", (new_customer_id, room_id))
     conn.commit()
 
     # Redirect to a confirmation page or render confirmation message
